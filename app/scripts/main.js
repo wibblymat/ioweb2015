@@ -21,7 +21,7 @@
   // @codekit-prepend 'third_party/signals.min.js'
   // @codekit-prepend 'third_party/requestAnimationFrame.js'
 
-  exports.IOWA = {};
+  exports.IOWA = exports.IOWA || {};
 
   // TODO: Make the codekit syntax work with gulp.
   // @codekit-append 'bootstrap.js'
