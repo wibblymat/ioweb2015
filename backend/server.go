@@ -7,7 +7,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -34,8 +33,8 @@ func main() {
 	flag.StringVar(&appEnv, "env", appEnv, "app environment: dev, stage or prod")
 	flag.Parse()
 
-	http.HandleFunc("/", catchAllHandler)
-	http.HandleFunc("/api/extended", serveIOExtEntries)
+	http.HandleFunc("/", withLogging(catchAllHandler))
+	http.HandleFunc("/api/extended", withLogging(serveIOExtEntries))
 
 	log.Fatal(http.ListenAndServe(listenAddr, nil))
 }
@@ -44,11 +43,6 @@ func main() {
 // or responds with a rendered template if no static asset found
 // under the in-flight request.
 func catchAllHandler(w http.ResponseWriter, r *http.Request) {
-	logmsg := fmt.Sprintf("%s %s", r.Method, r.URL.Path)
-	defer func() {
-		log.Println(logmsg)
-	}()
-
 	p := path.Clean("/" + r.URL.Path)
 	if p == "/" {
 		p += "index"
@@ -61,6 +55,13 @@ func catchAllHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.ServeFile(w, r, p)
+}
+
+func withLogging(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("%s %s", r.Method, r.URL.Path)
+		h(w, r)
+	}
 }
 
 // env returns current app environment: "dev", "stage" or "prod".
