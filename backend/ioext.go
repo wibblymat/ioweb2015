@@ -27,12 +27,13 @@ type extEntry struct {
 
 // ioExtEntries returns a slice of extEntry items
 // from either locally stored file (in 'dev' mode) or a Google Sheet ioExtSheet.
-func ioExtEntries() ([]*extEntry, error) {
+// The mode is specified in env arg.
+func ioExtEntries(env string) ([]*extEntry, error) {
 	var (
 		b   []byte
 		err error
 	)
-	switch appEnv {
+	switch env {
 	case "dev":
 		xmlfile := filepath.Join(rootDir, "temporary_api", "ioext_feed.xml")
 		b, err = ioutil.ReadFile(xmlfile)

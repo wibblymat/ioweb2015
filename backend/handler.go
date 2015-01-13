@@ -38,7 +38,7 @@ func serveTemplate(w http.ResponseWriter, r *http.Request) {
 func serveIOExtEntries(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 
-	entries, err := ioExtEntries()
+	entries, err := ioExtEntries(env(r))
 	if err != nil {
 		log.Printf("ioExtEntries: %v", err)
 		writeJSONError(w, err)

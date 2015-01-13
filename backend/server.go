@@ -18,7 +18,9 @@ import (
 var (
 	rootDir    string
 	listenAddr string
-	appEnv     string
+	// app environment: "dev", "stage" or "prod"
+	// don't refer to this directly, use env(r) func instead.
+	appEnv string
 )
 
 // main is the entry point of the standalone server.
