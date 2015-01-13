@@ -33,6 +33,7 @@ func main() {
 	flag.Parse()
 
 	http.HandleFunc("/", catchAllHandler)
+	http.HandleFunc("/api/extended", serveIOExtEntries)
 
 	log.Fatal(http.ListenAndServe(listenAddr, nil))
 }

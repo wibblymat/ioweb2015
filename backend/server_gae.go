@@ -17,6 +17,7 @@ var rootDir = "app"
 
 func init() {
 	http.HandleFunc("/", serveTemplate)
+	http.HandleFunc("/api/extended", serveIOExtEntries)
 }
 
 // env returns current app environment: "dev", "stage" or "prod".

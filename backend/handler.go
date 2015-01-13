@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"path"
@@ -29,4 +31,34 @@ func serveTemplate(w http.ResponseWriter, r *http.Request) {
 		log.Printf("renderTemplate: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+// serveIOExtEntries responds with I/O extended entries in JSON format.
+// See extEntry struct definition for more details.
+func serveIOExtEntries(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;charset=utf-8")
+
+	entries, err := ioExtEntries()
+	if err != nil {
+		log.Printf("ioExtEntries: %v", err)
+		writeJSONError(w, err)
+		return
+	}
+
+	body, err := json.Marshal(entries)
+	if err != nil {
+		log.Printf("json.Marshal: %v", err)
+		writeJSONError(w, err)
+		return
+	}
+
+	if _, err := w.Write(body); err != nil {
+		log.Printf("w.Write: %v", err)
+	}
+}
+
+// writeJSONError sets response code to 500 and writes an error message to w.
+func writeJSONError(w http.ResponseWriter, err error) {
+	w.WriteHeader(http.StatusInternalServerError)
+	fmt.Fprintf(w, `{"error": %q}`, err.Error())
 }
